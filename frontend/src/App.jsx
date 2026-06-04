@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { createLead, getLeads } from './services/leadService'
+import { createLead, getLeads, deleteLead } from './services/leadService'
 
 function App() {
   const [leads, setLeads] = useState([])
@@ -74,6 +74,26 @@ function App() {
         next_follow_up_date: '',
         notes: ''
       })
+
+      setError('')
+    } catch (error) {
+      setError(error.message)
+    }
+  }
+
+  async function handleDeleteLead(id) {
+    const confirmDelete = window.confirm('Tem certeza que deseja excluir este lead?')
+
+    if (!confirmDelete) {
+      return
+    }
+
+    try {
+      await deleteLead(id)
+
+      setLeads((currentLeads) =>
+        currentLeads.filter((lead) => lead.id !== id)
+      )
 
       setError('')
     } catch (error) {
@@ -202,6 +222,9 @@ function App() {
             <p>Status: {lead.status}</p>
             <p>Valor da proposta: R$ {lead.proposal_value}</p>
             <p>Observações: {lead.notes}</p>
+            <button type="button" onClick={() => handleDeleteLead(lead.id)}>
+              Excluir lead
+            </button>
             <hr />
           </div>
         ))}

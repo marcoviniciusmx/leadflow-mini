@@ -28,3 +28,17 @@ export async function createLead(leadData) {
 
     return data
 }
+
+export async function deleteLead(id) {
+  const response = await fetch(`${API_URL}/${id}`, {
+    method: 'DELETE'
+  })
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Erro ao deletar lead')
+  }
+
+  return data
+}
