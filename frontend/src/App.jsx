@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { createLead, getLeads, deleteLead } from './services/leadService'
+import { createLead, getLeads, deleteLead, updateLead } from './services/leadService'
 
 function App() {
   const [leads, setLeads] = useState([])
@@ -93,6 +93,24 @@ function App() {
 
       setLeads((currentLeads) =>
         currentLeads.filter((lead) => lead.id !== id)
+      )
+
+      setError('')
+    } catch (error) {
+      setError(error.message)
+    }
+  }
+
+  async function handleUpdateStatus(id, newStatus) {
+    try {
+      const updatedLead = await updateLead(id, {
+        status: newStatus
+      })
+
+      setLeads((currentLeads) =>
+        currentLeads.map((lead) =>
+          lead.id === id ? updatedLead : lead
+        )
       )
 
       setError('')
@@ -219,7 +237,21 @@ function App() {
             <p>Contato: {lead.contact_name}</p>
             <p>Telefone: {lead.phone}</p>
             <p>Segmento: {lead.segment}</p>
-            <p>Status: {lead.status}</p>
+            <div>
+              <label>Status: </label>
+              <select
+                value={lead.status}
+                onChange={(event) => handleUpdateStatus(lead.id, event.target.value)}
+              >
+                <option value="Novo">Novo</option>
+                <option value="Contatado">Contatado</option>
+                <option value="Respondeu">Respondeu</option>
+                <option value="Proposta enviada">Proposta enviada</option>
+                <option value="Negociação">Negociação</option>
+                <option value="Fechado">Fechado</option>
+                <option value="Perdido">Perdido</option>
+              </select>
+            </div>
             <p>Valor da proposta: R$ {lead.proposal_value}</p>
             <p>Observações: {lead.notes}</p>
             <button type="button" onClick={() => handleDeleteLead(lead.id)}>

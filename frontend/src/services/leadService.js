@@ -30,15 +30,33 @@ export async function createLead(leadData) {
 }
 
 export async function deleteLead(id) {
-  const response = await fetch(`${API_URL}/${id}`, {
-    method: 'DELETE'
-  })
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: 'DELETE'
+    })
 
-  const data = await response.json()
+    const data = await response.json()
 
-  if (!response.ok) {
-    throw new Error(data.message || 'Erro ao deletar lead')
-  }
+    if (!response.ok) {
+        throw new Error(data.message || 'Erro ao deletar lead')
+    }
 
-  return data
+    return data
+}
+
+export async function updateLead(id, leadData) {
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(leadData)
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+        throw new Error(data.message || 'Erro ao atualizar lead')
+    }
+
+    return data
 }
