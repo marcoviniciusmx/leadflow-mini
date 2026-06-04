@@ -110,3 +110,24 @@ export async function updateLead(req, res) {
 
     return res.json(result.rows[0])
 }
+
+
+export async function deleteLead(req, res) {
+    const { id } = req.params
+
+    const result = await pool.query(
+        'DELETE FROM leads WHERE id = $1 RETURNING *',
+        [id]
+    )
+
+    if (result.rows.length === 0) {
+        return res.status(404).json({
+            message: 'Lead não encontrado.'
+        })
+    }
+
+    return res.json({
+        message: 'Lead deletado com sucesso.',
+        lead: result.rows[0]
+    })
+}
